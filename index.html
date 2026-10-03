@@ -51,15 +51,6 @@
     .loading-pulse {
       animation: pulseSoft 1.5s infinite ease-in-out;
     }
-
-    /* Modal Animation */
-    @keyframes modalSlideUp {
-      from { transform: translateY(20px) scale(0.98); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
-    }
-    .animate-modal {
-      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col selection:bg-teal-500 selection:text-white pb-12">
@@ -232,13 +223,13 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- الإضافة الذكية: الزر العائم للاسكانر الطبي (Floating Button) -->
+  <!-- الزر العائم مربوط بالرابط المطلوب مباشرة -->
   <!-- ======================================================== -->
-  <button 
+  <a 
     id="floating-scanner-btn" 
-    onclick="openScannerModal()" 
-    title="مسح الروشتة ضوئياً بالاسكانر" 
-    class="fixed bottom-6 end-6 z-40 bg-gradient-to-r from-teal-800 to-cyan-900 hover:from-teal-700 hover:to-cyan-800 text-white p-3.5 sm:px-5 sm:py-3.5 rounded-full shadow-2xl shadow-teal-950/40 border border-teal-400/30 flex items-center gap-2.5 active:scale-95 transition-all duration-300 group"
+    href="https://norhansalah616-dev.github.io/MEDICAL-TEST/"
+    title="الانتقال إلى صفحة التحاليل" 
+    class="fixed bottom-6 start-6 z-40 bg-gradient-to-r from-teal-800 to-cyan-900 hover:from-teal-700 hover:to-cyan-800 text-white p-3.5 sm:px-5 sm:py-3.5 rounded-full shadow-2xl shadow-teal-950/40 border border-teal-400/30 flex items-center gap-2.5 active:scale-95 transition-all duration-300 group no-underline"
   >
     <div class="relative">
       <svg class="w-6 h-6 text-teal-300 group-hover:rotate-12 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -252,59 +243,7 @@
       <span class="absolute -top-1 -end-1 w-2.5 h-2.5 bg-amber-400 rounded-full"></span>
     </div>
     <span id="scanner-btn-label" class="hidden sm:inline font-black text-sm text-teal-50 tracking-wide">الاسكانر الذكي</span>
-  </button>
-
-  <!-- ======================================================== -->
-  <!-- الإضافة الذكية: النافذة المنبثقة للاسكانر (Modal with iFrame) -->
-  <!-- ======================================================== -->
-  <div 
-    id="scanner-modal" 
-    class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-0 sm:p-4 transition-all duration-300" 
-    onclick="closeScannerOnBackdrop(event)"
-  >
-    <div class="bg-white sm:rounded-3xl w-full max-w-2xl h-full sm:h-[88vh] overflow-hidden shadow-2xl flex flex-col border border-teal-800/20 animate-modal">
-      
-      <!-- هيدر النافذة المنبثقة -->
-      <div class="p-4 bg-gradient-to-r from-teal-900 to-cyan-900 text-white flex items-center justify-between shadow-md shrink-0">
-        <div class="flex items-center gap-2.5">
-          <div class="p-1.5 bg-white/10 rounded-xl text-teal-300">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
-            </svg>
-          </div>
-          <div>
-            <span id="scanner-modal-title" class="text-sm font-black text-white">الاسكانر الذكي لقراءة الروشتة</span>
-            <p id="scanner-modal-desc" class="text-[10px] text-teal-200/80">استخدم الكاميرا لمسح ورقة التحليل والتعرف عليها</p>
-          </div>
-        </div>
-
-        <button 
-          onclick="closeScannerModal()" 
-          class="w-9 h-9 rounded-full bg-white/10 hover:bg-rose-600 active:scale-90 flex items-center justify-center text-white text-lg font-bold transition-all duration-200" 
-          title="إغلاق والرجوع للشروط"
-        >
-          ✕
-        </button>
-      </div>
-
-      <!-- إطار الاسكانر (iFrame) مع دعم الكاميرا -->
-      <div class="relative flex-1 bg-slate-900 overflow-hidden flex flex-col">
-        <div id="scanner-loader" class="absolute inset-0 flex flex-col items-center justify-center text-white bg-slate-900 z-10">
-          <div class="w-10 h-10 border-4 border-teal-400 border-t-transparent rounded-full animate-spin mb-3"></div>
-          <p id="scanner-loader-text" class="text-xs text-teal-200 font-bold">جارٍ تشغيل الاسكانر وتفعيل الكاميرا...</p>
-        </div>
-        
-        <iframe 
-          id="scanner-iframe" 
-          src="" 
-          allow="camera; microphone"
-          class="w-full h-full border-0 flex-1"
-          onload="hideScannerLoader()"
-        ></iframe>
-      </div>
-
-    </div>
-  </div>
+  </a>
 
   <script>
     let currentLang = 'ar';
@@ -895,7 +834,8 @@
         case 'alert':
           return `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
         case 'flask':
-          return `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31L4.66 18.5A2 2 0 0 0 6.4 22h11.2a2 2 0 0 0 1.74-3.5L14 9.31V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>`;
+          return `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31L4.66 18.5A2 2 0 0 0 6.4 22h11.2a2 2 0 0 0 1.74-3.5L14 9.31V2"/>
+          <path d="M8.5 2h7"/><path d="M7 16h10"/></svg>`;
         case 'layers':
           return `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`;
         default:
@@ -1077,11 +1017,8 @@
       document.getElementById('modal-close-label').innerText = isAr ? 'إغلاق' : 'Close';
       document.getElementById('modal-mobile-hint').innerText = isAr ? '💡 للموبايل: يمكنك الضغط مطولاً على الصورة لحفظها فوراً في الاستوديو أو مشاركتها في واتساب.' : '💡 Mobile tip: Long-press the preview image to save to gallery or share directly.';
 
-      // تحديث نصوص الاسكانر عند تغيير اللغة
+      // تحديث نص زر الاسكانر مع تغيير اللغة
       document.getElementById('scanner-btn-label').innerText = isAr ? 'الاسكانر الذكي' : 'Smart Scanner';
-      document.getElementById('scanner-modal-title').innerText = isAr ? 'الاسكانر الذكي لقراءة الروشتة' : 'Smart Prescription Scanner';
-      document.getElementById('scanner-modal-desc').innerText = isAr ? 'استخدم الكاميرا لمسح ورقة التحليل والتعرف عليها' : 'Use camera to scan and identify test orders';
-      document.getElementById('scanner-loader-text').innerText = isAr ? 'جارٍ تشغيل الاسكانر وتفعيل الكاميرا...' : 'Starting scanner and enabling camera...';
 
       renderCards();
     }
@@ -1217,55 +1154,6 @@
         showToast(currentLang === 'ar' ? 'حدث خطأ أثناء تحميل الصورة' : 'Error generating poster', '❌');
       });
     }
-
-    // ========================================================
-    // سكريبت إدارة الاسكانر الطبي الذكي (Modal Logic)
-    // ========================================================
-    const scannerAppUrl = "https://norhansalah616-dev.github.io/python-project/";
-    const scannerModal = document.getElementById('scanner-modal');
-    const scannerIframe = document.getElementById('scanner-iframe');
-    const scannerLoader = document.getElementById('scanner-loader');
-
-    function openScannerModal() {
-      // إظهار اللودر ريثما يتم التحميل
-      scannerLoader.classList.remove('hidden');
-      
-      // تعيين رابط الاسكانر إذا لم يكن محملاً
-      if (!scannerIframe.src || scannerIframe.src === "about:blank") {
-        scannerIframe.src = scannerAppUrl;
-      }
-      
-      scannerModal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden'; // قفل سكرول الصفحة الرئيسية
-    }
-
-    function hideScannerLoader() {
-      if (scannerIframe.src && scannerIframe.src !== "about:blank") {
-        scannerLoader.classList.add('hidden');
-      }
-    }
-
-    function closeScannerModal() {
-      scannerModal.classList.add('hidden');
-      document.body.style.overflow = '';
-      
-      // تفريغ الرابط لإيقاف الكاميرا في الخلفية وتوفير موارد الجهاز والبطارية
-      scannerIframe.src = "about:blank";
-      scannerLoader.classList.remove('hidden');
-    }
-
-    function closeScannerOnBackdrop(e) {
-      if (e.target === scannerModal) {
-        closeScannerModal();
-      }
-    }
-
-    // إغلاق النافذة بزر Esc
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !scannerModal.classList.contains('hidden')) {
-        closeScannerModal();
-      }
-    });
 
     // Immediate Reliable Initialization
     function initApp() {
