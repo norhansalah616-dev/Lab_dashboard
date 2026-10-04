@@ -27,12 +27,31 @@
       }
     }
   </script>
-  <style>
 
-    body {
+  <style>
+    * {
       font-family: 'Cairo', sans-serif;
-      -webkit-tap-highlight-color: transparent;
+      letter-spacing: normal !important;
+      font-feature-settings: "kern" 1;
+      text-rendering: geometricPrecision;
     }
+    
+    /* منع تحديد النصوص والسحب لحماية المحتوى */
+    body {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    input, textarea {
+      -webkit-user-select: auto;
+      -moz-user-select: auto;
+      -ms-user-select: auto;
+      user-select: auto;
+    }
+
     .card-gradient {
       background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
     }
@@ -53,7 +72,7 @@
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col selection:bg-teal-500 selection:text-white pb-12">
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col selection:bg-teal-500 selection:text-white pb-12" oncontextmenu="return false;">
 
   <!-- Header Section -->
   <header class="bg-gradient-to-r from-teal-900 via-teal-800 to-cyan-900 text-white shadow-xl sticky top-0 z-30">
@@ -222,9 +241,7 @@
     <span id="toast-text">تمت العملية بنجاح</span>
   </div>
 
-  <!-- ======================================================== -->
-  <!-- الزر العائم مربوط بالرابط المطلوب مباشرة -->
-  <!-- ======================================================== -->
+  <!-- الزر العائم مربوط بالرابط مباشرة -->
   <a 
     id="floating-scanner-btn" 
     href="https://norhansalah616-dev.github.io/MEDICAL-TEST/"
@@ -245,6 +262,65 @@
     <span id="scanner-btn-label" class="hidden sm:inline font-black text-sm text-teal-50 tracking-wide">الاسكانر الذكي</span>
   </a>
 
+  <!-- سكربت قفل الـ Source Code ومنع أدوات المطورين -->
+  <script>
+    // 1. منع الزر الأيمن للماوس (Right Click)
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      showToast('عذراً، النقر الأيمن معطل لحماية المحتوى', '🔒');
+      return false;
+    });
+
+    // 2. منع اختصارات لوحة المفاتيح المخصصة للسورس كود والمطورين
+    document.addEventListener('keydown', (e) => {
+      // منع F12
+      if (e.key === 'F12' || e.keyCode === 123) {
+        e.preventDefault();
+        return false;
+      }
+
+      // منع Ctrl+U (عرض السورس كود)
+      if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) {
+        e.preventDefault();
+        return false;
+      }
+
+      // منع Ctrl+Shift+I أو Ctrl+Shift+J أو Ctrl+Shift+C (Inspect Element)
+      if (e.ctrlKey && e.shiftKey && (
+          e.key === 'I' || e.key === 'i' || e.keyCode === 73 ||
+          e.key === 'J' || e.key === 'j' || e.keyCode === 74 ||
+          e.key === 'C' || e.key === 'c' || e.keyCode === 67
+      )) {
+        e.preventDefault();
+        return false;
+      }
+
+      // منع Ctrl+S (حفظ الصفحة بالكامل)
+      if (e.ctrlKey && (e.key === 's' || e.key === 'S' || e.keyCode === 83)) {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    // 3. منع سحب الصور خارج المتصفح
+    document.addEventListener('dragstart', (e) => {
+      e.preventDefault();
+      return false;
+    });
+
+    // 4. آلية تعطيل التلاعب (Debugger Loop)
+    setInterval(() => {
+      (function() {
+        const startTime = performance.now();
+        debugger;
+        if (performance.now() - startTime > 100) {
+          document.body.innerHTML = '<div style="display:flex;height:100vh;align-items:center;justify-content:center;font-family:Cairo,sans-serif;font-weight:bold;color:#0f766e;">تم إيقاف الصفحة لحماية الكود.</div>';
+        }
+      })();
+    }, 1000);
+  </script>
+
+  <!-- سكربت التطبيق وتشغيل التحاليل -->
   <script>
     let currentLang = 'ar';
     let currentCategory = 'all';
@@ -252,9 +328,8 @@
     let lastGeneratedBlob = null;
     let lastGeneratedFilename = '';
 
-    // Full 31 tests directly extracted from medical file
+    // قائمة الـ 31 تحليلاً
     const labTests = [
-      // 1. السكر والدهون
       {
         id: "lipid",
         category: "sugar",
@@ -437,8 +512,6 @@
         ],
         tags: ["لاكتوز", "حساسية لبن", "lactose"]
       },
-
-      // 2. الهرمونات والمواعيد
       {
         id: "fsh",
         category: "hormones",
@@ -533,8 +606,6 @@
         ],
         tags: ["حمل", "triple marker", "جنين"]
       },
-
-      // 3. أدوية وحمية غذائية
       {
         id: "aldosterone",
         category: "restrictions",
@@ -698,8 +769,6 @@
         ],
         tags: ["جرثومة المعدة", "نفخ", "urea breath", "معدة"]
       },
-
-      // 4. عينات البول والبراز والمسالك والذكورة
       {
         id: "urine_complete",
         category: "samples",
@@ -816,7 +885,6 @@
       }
     ];
 
-    // Inline SVG Icon Provider
     function getSvgIcon(type) {
       switch(type) {
         case 'clock':
@@ -843,7 +911,6 @@
       }
     }
 
-    // Render Cards
     function renderCards() {
       const container = document.getElementById('cards-container');
       const noResults = document.getElementById('no-results');
@@ -889,11 +956,9 @@
         `).join('');
 
         card.innerHTML = `
-          <!-- Accent Top Bar -->
           <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-600"></div>
 
           <div>
-            <!-- Card Header -->
             <div class="flex items-start justify-between gap-3 mb-3">
               <div>
                 <span class="inline-block px-2.5 py-0.5 text-[11px] font-black rounded-full border ${test.badgeColor} mb-1.5">
@@ -907,7 +972,6 @@
               </div>
             </div>
 
-            <!-- Instructions Box -->
             <div class="my-4 bg-white/90 rounded-2xl p-4 border border-slate-100 shadow-inner">
               <p class="text-[11px] font-black text-teal-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-teal-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -921,7 +985,6 @@
             </div>
           </div>
 
-          <!-- Bottom Action Bar -->
           <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
             <span class="text-[10px] text-slate-400 font-bold tracking-tight">معمل التحاليل الطبية</span>
             <button 
@@ -941,7 +1004,6 @@
       });
     }
 
-    // Filter by Category
     function filterCategory(cat) {
       currentCategory = cat;
       document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -956,7 +1018,6 @@
       renderCards();
     }
 
-    // Search Handler
     function handleSearch(val) {
       searchQuery = val;
       const clearBtn = document.getElementById('clear-search');
@@ -978,7 +1039,6 @@
       renderCards();
     }
 
-    // Language Toggle
     function toggleLanguage() {
       currentLang = currentLang === 'ar' ? 'en' : 'ar';
       const isAr = currentLang === 'ar';
@@ -1017,13 +1077,11 @@
       document.getElementById('modal-close-label').innerText = isAr ? 'إغلاق' : 'Close';
       document.getElementById('modal-mobile-hint').innerText = isAr ? '💡 للموبايل: يمكنك الضغط مطولاً على الصورة لحفظها فوراً في الاستوديو أو مشاركتها في واتساب.' : '💡 Mobile tip: Long-press the preview image to save to gallery or share directly.';
 
-      // تحديث نص زر الاسكانر مع تغيير اللغة
       document.getElementById('scanner-btn-label').innerText = isAr ? 'الاسكانر الذكي' : 'Smart Scanner';
 
       renderCards();
     }
 
-    // Toast Notification
     function showToast(msg, icon = '✅') {
       const toast = document.getElementById('toast');
       const text = document.getElementById('toast-text');
@@ -1041,7 +1099,6 @@
       }, 3200);
     }
 
-    // Open Mobile Image Modal
     function openModalWithImage(dataUrl, filename, blob) {
       lastGeneratedBlob = blob;
       lastGeneratedFilename = filename;
@@ -1068,7 +1125,6 @@
       document.getElementById('image-modal').classList.add('hidden');
     }
 
-    // Share Generated Image via Web Share API
     async function shareGeneratedImage() {
       if (!lastGeneratedBlob) return;
       try {
@@ -1088,7 +1144,7 @@
       }
     }
 
-    // Download Single Card with high resolution
+    // تنزيل كارت فردي مع حل مشكلة الحروف المفرطة
     function downloadSingleCard(cardElementId, testId) {
       const card = document.getElementById(cardElementId);
       if (!card) return;
@@ -1096,10 +1152,22 @@
       showToast(currentLang === 'ar' ? 'جارٍ تجهيز الصورة بدقة عالية...' : 'Generating high-res image...', '⏳');
 
       html2canvas(card, {
-        scale: 3,
+        scale: 2.5,
         backgroundColor: '#ffffff',
         useCORS: true,
-        logging: false
+        logging: false,
+        onclone: (clonedDoc) => {
+          const target = clonedDoc.getElementById(cardElementId);
+          if (target) {
+            target.style.direction = 'rtl';
+            target.style.fontFamily = "'Cairo', sans-serif";
+            target.querySelectorAll('*').forEach(el => {
+              el.style.fontFamily = "'Cairo', sans-serif";
+              el.style.letterSpacing = 'normal';
+              el.style.textRendering = 'geometricPrecision';
+            });
+          }
+        }
       }).then(canvas => {
         canvas.toBlob(blob => {
           const dataUrl = canvas.toDataURL('image/png');
@@ -1119,7 +1187,7 @@
       });
     }
 
-    // Download Full Poster
+    // تنزيل البوستر كاملاً مع معالجة الخطوط
     function downloadFullPoster() {
       const target = document.getElementById('cards-container');
       const btnText = document.getElementById('btn-download-all-text');
@@ -1133,7 +1201,18 @@
         scale: 2,
         backgroundColor: '#f1f5f9',
         useCORS: true,
-        logging: false
+        logging: false,
+        onclone: (clonedDoc) => {
+          const clonedContainer = clonedDoc.getElementById('cards-container');
+          if (clonedContainer) {
+            clonedContainer.style.direction = 'rtl';
+            clonedContainer.style.fontFamily = "'Cairo', sans-serif";
+            clonedContainer.querySelectorAll('*').forEach(el => {
+              el.style.fontFamily = "'Cairo', sans-serif";
+              el.style.letterSpacing = 'normal';
+            });
+          }
+        }
       }).then(canvas => {
         btnText.innerText = originalText;
         canvas.toBlob(blob => {
@@ -1155,7 +1234,6 @@
       });
     }
 
-    // Immediate Reliable Initialization
     function initApp() {
       renderCards();
     }
